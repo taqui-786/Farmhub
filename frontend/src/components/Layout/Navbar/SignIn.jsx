@@ -19,9 +19,20 @@ export default function SignIn({ open, setOpen, status, setStatus, signInStatus,
         password: "",
     });
 
+    const [filled,setFilled] = useState(true)
+
     const handleChange = (event) => {
         setSignInStatus('typing');
         setLoginInfo({ ...loginInfo, [event.target.name]: event.target.value });
+        // VALIDATION FORM
+        if(loginInfo.phoneNumber ){
+            setFilled(false)
+        }else if( loginInfo.password.length){
+            setFilled(false)
+
+        }else{
+            setFilled(true)
+        }
     };
 
     // -------------------------------- Login User -------------------------------- 
@@ -34,6 +45,8 @@ export default function SignIn({ open, setOpen, status, setStatus, signInStatus,
             phoneNumber: loginInfo.phoneNumber,
             password: loginInfo.password,
         };
+        
+    
 
         axios.post(`${process.env.REACT_APP_BACKEND_URL}/user/login`, loginDetails, { withCredentials: true })
             .then(() => {
@@ -162,7 +175,7 @@ export default function SignIn({ open, setOpen, status, setStatus, signInStatus,
                         {signInStatus === 'authenticating' &&
                             <CircularProgress sx={{ ml: 3 }} color='tertiary' size='2rem' />
                         }
-                        <Button color='tertiary' type='submit'>
+                        <Button color='tertiary' type='submit' disabled={filled}>
                             Sign In
                         </Button>
                         <Button color='tertiary' onClick={() => setOpen(false)}>Cancel</Button>
